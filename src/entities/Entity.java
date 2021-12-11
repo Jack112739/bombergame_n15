@@ -2,8 +2,11 @@ package entities;
 
 import gameInterface.GameMap;
 import graphics.Sprite;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.image.PixelWriter;
+import javafx.scene.image.WritableImage;
+
+import java.awt.*;
 
 /**
  * 1 vật thể trong game mọi thứ có trong game đều là entity
@@ -25,7 +28,7 @@ public class Entity {
      * @param img ảnh hiện tại của map
      */
     public Entity(int xUnit, int yUnit, Image img) {
-        this(xUnit * Sprite.ScaleSize, yUnit * Sprite.ScaleSize);
+        this(xUnit * Sprite.DEFAULT_SIZE, yUnit * Sprite.DEFAULT_SIZE);
         this.img = img;
     }
 
@@ -47,8 +50,8 @@ public class Entity {
         if (e1 == null || e2 == null) {
             return false;
         }
-        return (Math.abs(e1.getX() - e2.getX()) < Sprite.ScaleSize - 10)
-            && (Math.abs(e1.getY() - e2.getY()) < Sprite.ScaleSize - 10);
+        return (Math.abs(e1.getX() - e2.getX()) < Sprite.DEFAULT_SIZE - 10)
+            && (Math.abs(e1.getY() - e2.getY()) < Sprite.DEFAULT_SIZE - 10);
     }
 
     /**
@@ -60,11 +63,19 @@ public class Entity {
     }
 
     /**
-     * vẽ ảnh vào trong canvas
-     * @param gc graphic context cần được vẽ ảnh vào.
+     * vẽ ảnh vào trong image của map
+     *
+     * @param mapImg ảnh cần được vẽ đè.
      */
-    public void render(GraphicsContext gc) {
-        gc.drawImage(img, x + Sprite.RenderX, y + Sprite.RenderY);
+    public void render(WritableImage mapImg, Rectangle pointOfView) {
+        PixelWriter pixel = mapImg.getPixelWriter();
+        for(int i=y; i< y + img.getHeight(); i++) for(int j=x; j < x + img.getWidth(); j++) {
+            Point point = new Point(j, i);
+            int argb = img.getPixelReader().getArgb(j - x, i - y);
+            if(pointOfView.contains(point) && argb != 0) {
+                pixel.setArgb(j - pointOfView.x, i - pointOfView.y, argb);
+            }
+        }
     }
 
     public int getX() {

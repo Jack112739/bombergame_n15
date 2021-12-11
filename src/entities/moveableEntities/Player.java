@@ -32,7 +32,7 @@ public class Player extends MoveAbleEntity implements EventHandler<KeyEvent> {
     @Override
     public Sprite getAnimation() {
         if (sprite == null) {
-            sprite = new Sprite(SpriteSheet.player, Sprite.ScaleSize);
+            sprite = new Sprite(SpriteSheet.player, Sprite.DEFAULT_SIZE);
         }
         return sprite;
     }
@@ -64,7 +64,7 @@ public class Player extends MoveAbleEntity implements EventHandler<KeyEvent> {
 //            (x + Sprite.ScaleSize/2)/Sprite.ScaleSize,
 //            (y + Sprite.ScaleSize/2)/Sprite.ScaleSize);
         map.getBackGround()
-            [(y + Sprite.ScaleSize / 2) / Sprite.ScaleSize][(x + Sprite.ScaleSize / 2) / Sprite.ScaleSize]
+            [(y + Sprite.DEFAULT_SIZE / 2) / Sprite.DEFAULT_SIZE][(x + Sprite.DEFAULT_SIZE / 2) / Sprite.DEFAULT_SIZE]
             .getList()
             .add(new Bomb(x, y));
     }
@@ -77,8 +77,8 @@ public class Player extends MoveAbleEntity implements EventHandler<KeyEvent> {
             time++;
             img = getImgBaseOnAnimation();
         }
-        int curX = (x + Sprite.ScaleSize / 2) / Sprite.ScaleSize;
-        int curY = (y + Sprite.ScaleSize / 2) / Sprite.ScaleSize;
+        int curX = (x + Sprite.DEFAULT_SIZE / 2) / Sprite.DEFAULT_SIZE;
+        int curY = (y + Sprite.DEFAULT_SIZE / 2) / Sprite.DEFAULT_SIZE;
         for (int i = -1; i < 2; i++) {
             for (int j = -1; j < 2; j++) {
                 BackGroundEntity e = m.getBackGround()[curY + i][curX + j];

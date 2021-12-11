@@ -82,8 +82,8 @@ public class Bomb extends AnimateEntity {
         // Sound sd = new Sound();
         // sd.createSound(Sound.BOMB_EXPLOSION);
         time = LIFE_TIME + 5; // huy bom hien tai nay
-        int curX = (x + Sprite.ScaleSize / 2) / Sprite.ScaleSize;
-        int curY = (y + Sprite.ScaleSize / 2) / Sprite.ScaleSize;
+        int curX = (x + Sprite.DEFAULT_SIZE / 2) / Sprite.DEFAULT_SIZE;
+        int curY = (y + Sprite.DEFAULT_SIZE / 2) / Sprite.DEFAULT_SIZE;
         explodeDirect(curX -1, curY, 1, 0, map);
         explodeDirect(curX, curY, 0, 1, map);
         explodeDirect(curX, curY, -1, 0, map);
@@ -93,7 +93,7 @@ public class Bomb extends AnimateEntity {
     @Override
     public Sprite getAnimation() {
         if (sprite == null) {
-            sprite = new Sprite(SpriteSheet.bomb, Sprite.ScaleSize);
+            sprite = new Sprite(SpriteSheet.bomb, Sprite.DEFAULT_SIZE);
         }
         return sprite;
     }

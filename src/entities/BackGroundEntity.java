@@ -1,12 +1,12 @@
 package entities;
 
-import entities.bomb.Bomb;
 import entities.bomb.Flame;
 import gameInterface.GameMap;
 import graphics.Sprite;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.image.WritableImage;
 
+import java.awt.*;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -37,9 +37,9 @@ public abstract class BackGroundEntity extends Entity {
     /**
      * render tất cả các entites trong list.
      */
-    public void renderAll(GraphicsContext gc) {
+    public void renderAll(WritableImage mapImg, Rectangle pointOfView) {
         for (Entity e : entitiesList) {
-            e.render(gc);
+            e.render(mapImg, pointOfView);
         }
     }
 
@@ -57,13 +57,13 @@ public abstract class BackGroundEntity extends Entity {
                 int deltaX = e.x - x;
                 int deltaY = e.y - y;
                 // kiểm tra xem entities hiện tại còn đang ở đúng background mà nó đè lên không.
-                if (Math.abs(deltaX) > Sprite.ScaleSize / 2 || Math.abs(deltaY) > Sprite.ScaleSize / 2) {
-                    deltaX /= (double) Sprite.ScaleSize / 2;
-                    deltaY /= (double) Sprite.ScaleSize / 2;
+                if (Math.abs(deltaX) > Sprite.DEFAULT_SIZE / 2 || Math.abs(deltaY) > Sprite.DEFAULT_SIZE / 2) {
+                    deltaX /= (double) Sprite.DEFAULT_SIZE / 2;
+                    deltaY /= (double) Sprite.DEFAULT_SIZE / 2;
                     it.remove();
 //                  System.out.printf("%s %d %d %d %d\n",e, x, y, x / Sprite.ScaleSize, y / Sprite.ScaleSize);
                     map.getBackGround()
-                        [y / Sprite.ScaleSize + deltaY][x / Sprite.ScaleSize + deltaX]
+                        [y / Sprite.DEFAULT_SIZE + deltaY][x / Sprite.DEFAULT_SIZE + deltaX]
                         .getList()
                         .add(e);
                 }
@@ -72,8 +72,8 @@ public abstract class BackGroundEntity extends Entity {
         // nếu thêm lửa thì add 1 flame vào entites list ( java không cho vừa thêm vừa xóa)
         if (makeFire) {
             entitiesList.addFirst(new Flame(
-                (x + Sprite.ScaleSize / 2) / Sprite.ScaleSize,
-                (y + Sprite.ScaleSize / 2) / Sprite.ScaleSize));
+                (x + Sprite.DEFAULT_SIZE / 2) / Sprite.DEFAULT_SIZE,
+                (y + Sprite.DEFAULT_SIZE / 2) / Sprite.DEFAULT_SIZE));
             makeFire = false;
         }
     }

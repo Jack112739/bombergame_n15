@@ -7,11 +7,11 @@
     thêm âm thanh // done
     tối ưu hóa bộ nhớ và thời gian của việc load ảnh //done
     xử lý player chạm vào enemies (có thể spike) thì chết //done
+    làm map load phụ thuộc vào vị trí player (map hiện tại chỉ load từ vị trí (0,0) -> (...)) // done
 
 đang tiến hành:
     load các entities tùy vào vị trí đặt map, kích thước ảnh cũng tùy vào kích thước map //in progress
     thiết kế item //in progress
-    làm map load phụ thuộc vào vị trí player (map hiện tại chỉ load từ vị trí (0,0) -> (...)) // chưa hoàn chỉnh
 
 cần phải tiến hành:
     *làm giao diện game (tức là màn hình login hiển thị hình ảnh khi chết, (tức cài đặt như giao diện từ điển btl1))

@@ -4,13 +4,11 @@ import entities.background.*;
 import entities.moveableEntities.*;
 import entities.*;
 import graphics.Sprite;
-import graphics.SpriteSheet;
 import javafx.animation.AnimationTimer;
 import javafx.event.EventHandler;
-import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
+import javafx.scene.image.WritableImage;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -23,40 +21,31 @@ import java.util.ArrayList;
  * class đảm biểu diễn 1 map trong game và load lên app.
  *
  * thuộc tính drawX, drawY : tọa độ hiển thị của map.
- * thuộc tính mapGC GraphicContext của map này, dùng để vẽ map...
+ * thuộc tính mapImg: hình ảnh của map thông qua point of view từ player (như 1 ảnh snapshot)
  * thuộc tính pointOfView : hình chữ nhật đại diện cho những gì player nhìn thấy trong map.
  * thuộc tính background : là 1 mảng 2 chiều gồm các NonAnimateEntity đảm nhận trách nghiệm biểu diễn map dễ hơn
- * thuộc tính player và portal : player và portal của map
+ * thuộc tính player : player của map
  */
 public class GameMap extends AnimationTimer implements EventHandler<KeyEvent> {
-    public int DISPLAY_BORDER = 32;
+    public final int DISPLAY_BORDER;
 
-    public final double drawX, drawY;
-    private final GraphicsContext mapGC;
+    private final WritableImage mapImg;
     private final Rectangle pointOfView;
     private BackGroundEntity[][] background;
     private Player player;
-    private Portal portal;
 
     /**
      * hàm khởi tạo chuẩn của class Map.
      *
-     * @param mapGC graphicContext của map.
-     * @param level level sẽ được load từ map.
-     * @param drawX,drawY vị trí x bắt đầu vẽ của map tính từ góc trên bên trái là (0,0)
-     * @param scale tỷ lệ các sprite ảnh cần tăng so với ảnh gốc.
-     * @param w chiều rộng của point of view từ player.
-     * @param h chiều cao của point of view từ player.
+     * @param mapPath đường dẫn của map
+     * @param w chiều rộng của point of view từ player tính theo pixel.
+     * @param h chiều cao của point of view từ player tính theo pixel.
      * @throws IOException nếu không load được map từ data, và kết thúc luôn chương trình.
      */
-    public GameMap(GraphicsContext mapGC, int level, double drawX, double drawY, double scale, int w, int h) {
-        this.mapGC = mapGC;
-        this.drawX = drawX;
-        this.drawY = drawY;
-        this.pointOfView = new Rectangle(0, 0, w * Sprite.ScaleSize, h * Sprite.ScaleSize);
-        Sprite.ScaleSize = (int) (SpriteSheet.DEFAULT_SIZE * scale);
+    public GameMap(String mapPath, int w, int h, int borderLength) {
+        this.pointOfView = new Rectangle(0, 0, w, h);
+        DISPLAY_BORDER = borderLength;
 
-        String mapPath = "data/map/level" + level + ".txt";
         int mapWidth, mapHeight = 0;
         ArrayList<String> files = new ArrayList<>();
         try {
@@ -76,9 +65,6 @@ public class GameMap extends AnimationTimer implements EventHandler<KeyEvent> {
                 for (int j = 0; j < mapWidth; j++) {
                     Entity e = convert(files.get(i).charAt(j), j, i);
                     if (e instanceof BackGroundEntity) {
-                        if (e instanceof Portal) {
-                            this.portal = (Portal) e;
-                        }
                         background[i][j] = (BackGroundEntity) e;
                     } else if (e instanceof AnimateEntity) {
                         background[i][j] = new Grass(j, i);
@@ -90,11 +76,11 @@ public class GameMap extends AnimationTimer implements EventHandler<KeyEvent> {
                     }
                 }
             }
-            if (pointOfView.height > mapGC.getCanvas().getHeight() - drawY) {
-                pointOfView.height = (int)(mapGC.getCanvas().getHeight() - drawY);
+            if (pointOfView.height > Sprite.DEFAULT_SIZE * getHeight() || pointOfView.height == 0) {
+                pointOfView.height = Sprite.DEFAULT_SIZE * getHeight();
             }
-            if (pointOfView.width > mapGC.getCanvas().getWidth() - drawX) {
-                pointOfView.width = (int) (mapGC.getCanvas().getWidth() - drawX);
+            if (pointOfView.width > Sprite.DEFAULT_SIZE * getWidth() || pointOfView.width == 0) {
+                pointOfView.width = Sprite.DEFAULT_SIZE * getWidth();
             }
             setView();
         } catch (IOException e) {
@@ -102,30 +88,28 @@ public class GameMap extends AnimationTimer implements EventHandler<KeyEvent> {
             System.out.println("can not load " + mapPath);
             System.exit(2);
         }
+        mapImg = new WritableImage(pointOfView.width, pointOfView.height);
     }
 
     /**
-     * hàm khởi tạo nhưng mặc định scale = 1.
+     * constructor theo level
      */
-    public GameMap(GraphicsContext mapGC, int level, double drawX, double drawY, int w, int h) {
-        this(mapGC, level, drawX, drawY, 1, w, h);
+    public GameMap(int level, int w, int h, int borderLength) {
+        this("data/map/level" + level + ".txt", w, h, borderLength);
     }
 
     /**
-     * hàm khởi tạo nhưng mặc định point of view của player phù hợp với map.
+     *  constructor mặc định độ dài của border = 2 * defaultSize của ảnh;
      */
-    public GameMap(GraphicsContext mapGC, int level, double drawX, double drawY) {
-        this(mapGC, level, drawX, drawY, 0, 0);
-        pointOfView.width = (int) (mapGC.getCanvas().getWidth() - drawX);
-        pointOfView.height = (int) (mapGC.getCanvas().getHeight() - drawY);
-        setView();
+    public GameMap(int level, int w, int h) {
+        this(level, w, h, Sprite.DEFAULT_SIZE * 2);
     }
 
     /**
      * constructor mặc định.
      */
-    public GameMap(GraphicsContext mapGC, int level) {
-        this(mapGC, level, 0, 0);
+    public GameMap(int level) {
+        this(level, 0, 0, Sprite.DEFAULT_SIZE * 2);
     }
 
     /**
@@ -188,9 +172,10 @@ public class GameMap extends AnimationTimer implements EventHandler<KeyEvent> {
     void render() {
         for (int i = 0; i < getHeight(); i++) {
             for (int j = 0; j < getWidth(); j++) {
-                Point p = new Point(j * Sprite.ScaleSize, i * Sprite.ScaleSize);
-                if (pointOfView.contains(p)) {
-                    background[i][j].renderAll(mapGC);
+                Point p1 = new Point(j * Sprite.DEFAULT_SIZE, i * Sprite.DEFAULT_SIZE);
+                Point p2 = new Point((j + 1) * Sprite.DEFAULT_SIZE, (i + 1) * Sprite.DEFAULT_SIZE);
+                if (pointOfView.contains(p1) || pointOfView.contains(p2)) {
+                    background[i][j].renderAll(mapImg, pointOfView);
                 }
             }
         }
@@ -205,14 +190,8 @@ public class GameMap extends AnimationTimer implements EventHandler<KeyEvent> {
         if (player == null) {
             return;
         }
-        // vẽ backgound
-        mapGC.setFill(Color.BLACK);
-        mapGC.fillRect(0, 0, mapGC.getCanvas().getWidth(), mapGC.getCanvas().getHeight());
         // xử lý trường hợp player chết
         if (player.expired()) {
-            mapGC.setFill(Color.RED);
-            mapGC.setFont(Font.font(30));
-            mapGC.fillText("Omea wa mou shindeiru", 200, 100);
             player = null;
             return;
         }
@@ -220,22 +199,16 @@ public class GameMap extends AnimationTimer implements EventHandler<KeyEvent> {
         // vẽ backgound của map đồng thời cập nhật các entities trong map
         for (int i = 0; i < getHeight(); i++) {
             for (int j = 0; j < getWidth(); j++) {
-                Point p = new Point(j * Sprite.ScaleSize, i * Sprite.ScaleSize);
+                Point p1 = new Point(j * Sprite.DEFAULT_SIZE, i * Sprite.DEFAULT_SIZE);
+                Point p2 = new Point((j + 1) * Sprite.DEFAULT_SIZE, (i + 1) * Sprite.DEFAULT_SIZE);
                 //System.out.println(p); // debug
-                if (pointOfView.contains(p)) {
-                    background[i][j].render(mapGC);
+                if (pointOfView.contains(p1) || pointOfView.contains(p2)) {
+                    background[i][j].render(mapImg, pointOfView);
                 }
                 background[i][j].update(now, this);
             }
         }
         render();
-        // xử lý khi player kết thức màn chơi
-        if (Entity.isCollide(player, portal)) {
-            mapGC.setFill(Color.GRAY);
-            mapGC.setFont(Font.font(30));
-            mapGC.fillText("YOU WIN! SCORE = " + player.score, 200, 500);
-            player = null;
-        }
         //  check(); // debug.
     }
 
@@ -245,8 +218,8 @@ public class GameMap extends AnimationTimer implements EventHandler<KeyEvent> {
     private void setView() {
         if (player.getX() < DISPLAY_BORDER) {
             pointOfView.x = 0;
-        } else if (player.getX() > getWidth() * Sprite.ScaleSize - DISPLAY_BORDER) {
-            pointOfView.x = getWidth() * Sprite.ScaleSize - pointOfView.width;
+        } else if (player.getX() > getWidth() * Sprite.DEFAULT_SIZE - DISPLAY_BORDER) {
+            pointOfView.x = getWidth() * Sprite.DEFAULT_SIZE - pointOfView.width;
         } else if (player.getX() < pointOfView.x + DISPLAY_BORDER) {
             pointOfView.x = player.getX() - DISPLAY_BORDER;
         } else if (player.getX() > pointOfView.x + pointOfView.width - DISPLAY_BORDER) {
@@ -255,16 +228,14 @@ public class GameMap extends AnimationTimer implements EventHandler<KeyEvent> {
 
         if (player.getY() < DISPLAY_BORDER) {
             pointOfView.y = 0;
-        } else if (player.getY() > getHeight() * Sprite.ScaleSize - DISPLAY_BORDER) {
-            pointOfView.y = getHeight() * Sprite.ScaleSize - pointOfView.height;
+        } else if (player.getY() > getHeight() * Sprite.DEFAULT_SIZE - DISPLAY_BORDER) {
+            pointOfView.y = getHeight() * Sprite.DEFAULT_SIZE - pointOfView.height;
         } else if (player.getY() < pointOfView.y + DISPLAY_BORDER) {
             pointOfView.y = player.getY() - DISPLAY_BORDER;
         } else if (player.getY() > pointOfView.y + pointOfView.height - DISPLAY_BORDER) {
             pointOfView.y = player.getY() - pointOfView.height + DISPLAY_BORDER;
         }
         //System.out.println(pointOfView); //debug
-        Sprite.RenderX = -pointOfView.x + (int) drawX;
-        Sprite.RenderY = -pointOfView.y + (int) drawY;
     }
 
     /**
@@ -311,7 +282,25 @@ public class GameMap extends AnimationTimer implements EventHandler<KeyEvent> {
         return (Rectangle) pointOfView.clone();
     }
 
-    public void scaleBorder(double d) {
-        DISPLAY_BORDER = (int)(Sprite.ScaleSize * d);
+    /**
+     * @return hình ảnh biểu diễn map thông qua poin of view từ player.
+     */
+    public Image getImage() {
+        return mapImg;
+    }
+
+    public enum Status {
+        PLAYER_LOSE,
+        GAME_ON,
+        PLAYER_WIN
+    }
+
+    /**
+     * trạng thái của map, có lẽ phải override tùy vào từng loại map
+     */
+    public Status status() {
+        if(player == null || player.expired()) return Status.PLAYER_LOSE;
+        else if(player.getX() + player.getY() > 1200) return Status.PLAYER_WIN; // để test thôi
+        else return Status.GAME_ON;
     }
 }

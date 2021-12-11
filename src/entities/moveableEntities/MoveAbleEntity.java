@@ -3,7 +3,6 @@ package entities.moveableEntities;
 import entities.AnimateEntity;
 import entities.Entity;
 import entities.background.BreakableWall;
-import entities.background.Grass;
 import entities.background.Wall;
 import gameInterface.GameMap;
 import graphics.Sprite;
@@ -72,8 +71,8 @@ public abstract class MoveAbleEntity extends AnimateEntity {
      */
     public boolean notCollideWall(int dx, int dy, GameMap map) {
         boolean result = true;
-        int posX = (x + dx + Sprite.ScaleSize / 2) / Sprite.ScaleSize;
-        int posY = (y + dy + Sprite.ScaleSize / 2) / Sprite.ScaleSize;
+        int posX = (x + dx + Sprite.DEFAULT_SIZE / 2) / Sprite.DEFAULT_SIZE;
+        int posY = (y + dy + Sprite.DEFAULT_SIZE / 2) / Sprite.DEFAULT_SIZE;
         // thử di chuyển entity hiện tại đi dx và dy đơn vị để xem có colide với cái gì không.
         Entity test = new Entity(x + dx, y + dy);
         for (int i = -1; i < 2; i++) {

@@ -9,7 +9,7 @@ import javafx.scene.image.Image;
  * đảm nhận như 1 vật để kiểm tra xem player đã thắng chưa tùy theo game mode.
  */
 public class Portal extends BackGroundEntity {
-    public static final Image DEFAULT_IMG = new Sprite(SpriteSheet.background, Sprite.ScaleSize)
+    public static final Image DEFAULT_IMG = new Sprite(SpriteSheet.background, Sprite.DEFAULT_SIZE)
         .getImageAt(5, 0);
 
     public Portal(int x, int y) {

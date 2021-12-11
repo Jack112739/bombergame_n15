@@ -1,5 +1,5 @@
 import gameInterface.GameMap;
-import graphics.Sprite;
+import gameInterface.MapDisplay;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -12,6 +12,7 @@ import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.awt.*;
 import java.io.File;
 
 /**
@@ -24,7 +25,7 @@ public class Main extends Application {
     MediaPlayer mediaPlayer;
     private Scene scene1, scene2;
     private Stage stage;
-    private GameMap map;
+    private MapDisplay mapDisplay;
 
     public static void main(String[] args) {
         Application.launch(args);
@@ -44,14 +45,12 @@ public class Main extends Application {
         Canvas canvas = new Canvas(WIDTH, HEIGHT);
         GraphicsContext gc = canvas.getGraphicsContext2D();
         gc.drawImage(
-            new Image("file:data/sprite/logScreen.png", WIDTH, HEIGHT, false, false),
-            0,
-            0);
+            new Image("file:data/sprite/logScreen.png", WIDTH, HEIGHT, false, false), 0, 0);
 
         Button button = new Button("test");
         button.setOnAction(event -> {
             scene2 = initScene2();
-            map.start();
+            mapDisplay.start();
             stage.setScene(scene2);
         });
         StackPane layout = new StackPane();
@@ -64,8 +63,7 @@ public class Main extends Application {
         Canvas canvas = new Canvas(WIDTH, HEIGHT);
         GraphicsContext gc = canvas.getGraphicsContext2D();
 
-        map = new GameMap(gc, 2,0,0,2,10000, 10000);
-        map.scaleBorder(1.5);
+        mapDisplay = new MapDisplay(1, new Rectangle(150, 150, 200, 200),gc);
 
         Button button = new Button("return");
 
@@ -74,7 +72,7 @@ public class Main extends Application {
         button.setOnAction(event -> {
 
             stage.setScene(scene1);
-            map.stop();
+            mapDisplay.stop();
 
         });
 
@@ -82,7 +80,7 @@ public class Main extends Application {
         layout.getChildren().addAll(canvas, button);
 
         Scene result = new Scene(layout);
-        result.setOnKeyPressed(map);
+        result.setOnKeyPressed(mapDisplay);
         return result;
     }
 
@@ -94,7 +92,6 @@ public class Main extends Application {
         mediaPlayer.setStopTime(Duration.minutes(10));
         mediaPlayer.play();
     }
-
 }
 
 

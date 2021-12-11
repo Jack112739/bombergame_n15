@@ -14,7 +14,7 @@ import javafx.scene.image.Image;
  */
 public class BreakableWall extends BackGroundEntity {
 
-    public static final Image DEFAULT_IMG = new Sprite(SpriteSheet.background, Sprite.ScaleSize)
+    public static final Image DEFAULT_IMG = new Sprite(SpriteSheet.background, Sprite.DEFAULT_SIZE)
         .getImageAt(1, 0);
 
     public BreakableWall(int x, int y) {

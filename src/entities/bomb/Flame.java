@@ -12,7 +12,7 @@ import javafx.scene.image.Image;
  * LIFE_TIME: thời gian tồn tại ( theo fps tức là LIFE_TIME/60 giây) của flame
  */
 public class Flame extends AnimateEntity {
-    public static final Image DEFAULT_IMG = new Sprite(SpriteSheet.background, Sprite.ScaleSize)
+    public static final Image DEFAULT_IMG = new Sprite(SpriteSheet.background, Sprite.DEFAULT_SIZE)
         .getImageAt(3, 0);
     public static long LIFE_TIME = 50;
     protected int time;

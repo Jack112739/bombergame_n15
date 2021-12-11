@@ -19,8 +19,7 @@ import javafx.scene.paint.Color;
 public class Sprite {
 
     public static final int TRANSPARENT_COLOR = 0xffffffff;
-    public static int RenderX = 0, RenderY = 0;
-    public static int ScaleSize = SpriteSheet.DEFAULT_SIZE;
+    public static final int DEFAULT_SIZE = SpriteSheet.DEFAULT_SIZE;
 
     public final int size;
     public final SpriteSheet sheet;
@@ -61,7 +60,7 @@ public class Sprite {
      * @return ảnh sau khi được chỉnh sửa về chỉnh để transparent
      */
 
-    private Image resample(WritableImage img, int scaled) {
+    public static Image resample(WritableImage img, int scaled) {
         ImageView imageView = new ImageView(img);
         imageView.setFitWidth(scaled);
         imageView.setFitHeight(scaled);
@@ -113,7 +112,7 @@ public class Sprite {
                         }
                     }
                 }
-                images[i * w + j] = resample(img, size);
+                images[i * w + j]  = img;
             }
         }
     }

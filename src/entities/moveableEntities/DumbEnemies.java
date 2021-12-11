@@ -45,7 +45,7 @@ public class DumbEnemies extends MoveAbleEntity {
     @Override
     public Sprite getAnimation() {
         if (sprite == null) {
-            sprite = new Sprite(SpriteSheet.dumbEnemies, Sprite.ScaleSize);
+            sprite = new Sprite(SpriteSheet.dumbEnemies, Sprite.DEFAULT_SIZE);
         }
         return sprite;
     }
