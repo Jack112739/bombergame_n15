@@ -26,6 +26,7 @@ public class Entity {
      */
     public Entity(int xUnit, int yUnit, Image img) {
         this(xUnit * Sprite.ScaleSize, yUnit * Sprite.ScaleSize);
+        this.img = img;
     }
 
     /**

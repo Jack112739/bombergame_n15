@@ -222,18 +222,20 @@ public class GameMap extends AnimationTimer implements EventHandler<KeyEvent> {
         for (int i = 0; i < getHeight(); i++) {
             for (int j = 0; j < getWidth(); j++) {
                 Point p = new Point(j * Sprite.ScaleSize, i * Sprite.ScaleSize);
-                if (pointOfView.contains(p)) {
+                //System.out.println(p); // debug
+                //if (pointOfView.contains(p)) {
                     background[i][j].render(mapGC);
-                }
+                //}
                 background[i][j].update(now, this);
             }
         }
         render();
         // xử lý khi player kết thức màn chơi
-        if (Entity.euclidDistance(player, portal) < Sprite.ScaleSize * 0.5) {
+        if (Entity.isCollide(player, portal)) {
             mapGC.setFill(Color.GRAY);
             mapGC.setFont(Font.font(30));
             mapGC.fillText("YOU WIN! SCORE = " + player.score, 200, 500);
+            player = null;
         }
         //  check(); // debug.
     }
@@ -261,6 +263,7 @@ public class GameMap extends AnimationTimer implements EventHandler<KeyEvent> {
         } else if (player.getY() > pointOfView.y + pointOfView.height - DISPLAY_BORDER) {
             pointOfView.y = player.getY() - pointOfView.height + DISPLAY_BORDER;
         }
+        //System.out.println(pointOfView); //debug
         Sprite.RenderX = -pointOfView.x + (int) drawX;
         Sprite.RenderY = -pointOfView.y + (int) drawY;
     }
@@ -294,9 +297,7 @@ public class GameMap extends AnimationTimer implements EventHandler<KeyEvent> {
 
     @Override
     public void handle(KeyEvent event) {
-        if (Entity.euclidDistance(player, portal) < Sprite.ScaleSize * 0.5) {
-            return;
-        }
+        if(player == null ) return;
         player.handle(event);
     }
 

@@ -63,7 +63,7 @@ public class Main extends Application {
         Canvas canvas = new Canvas(WIDTH, HEIGHT);
         GraphicsContext gc = canvas.getGraphicsContext2D();
 
-        map = new GameMap(gc, 1, 120, 120, 5, 5);
+        map = new GameMap(gc, 1);
 
         Button button = new Button("return");
 

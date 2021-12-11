@@ -18,10 +18,12 @@ import java.util.LinkedList;
 public abstract class BackGroundEntity extends Entity {
 
     private LinkedList<AnimateEntity> entitiesList;
+    private boolean makeFire;
 
     public BackGroundEntity(int xUnit, int yUnit, Image img) {
         super(xUnit, yUnit, img);
         entitiesList = new LinkedList<>();
+        makeFire = false;
     }
 
     public LinkedList<AnimateEntity> getList() {
@@ -44,16 +46,12 @@ public abstract class BackGroundEntity extends Entity {
     @Override
     public void update(long now, GameMap map) {
         Iterator<AnimateEntity> it = entitiesList.iterator();
-        boolean makeFire = false;
         // duyệt bẳng linked list iterator để chạy nhanh hơn
         while (it.hasNext()) {
             AnimateEntity e = it.next();
             e.update(now, map);
             if (e.expired()) {
                 // nếu entities đã hết thời gian tồn tại thì xóa khỏi list.
-                if (e instanceof Bomb) {
-                    makeFire = true;
-                }
                 it.remove();
             } else {
                 int deltaX = e.x - x;
@@ -76,6 +74,11 @@ public abstract class BackGroundEntity extends Entity {
             entitiesList.addFirst(new Flame(
                 (x + Sprite.ScaleSize / 2) / Sprite.ScaleSize,
                 (y + Sprite.ScaleSize / 2) / Sprite.ScaleSize));
+            makeFire = false;
         }
+    }
+
+    public void addFlame() {
+        makeFire = true;
     }
 }

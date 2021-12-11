@@ -4,7 +4,6 @@ package entities.bomb;
 import entities.AnimateEntity;
 import entities.Entity;
 import entities.BackGroundEntity;
-import entities.Item.Item;
 import entities.moveableEntities.MoveAbleEntity;
 import entities.background.BreakableWall;
 import entities.background.Grass;
@@ -40,7 +39,8 @@ public class Bomb extends AnimateEntity {
      * @param map map hiện tại chứa bomb này.
      */
     private void explodeDirect(int curX, int curY, int dx, int dy, GameMap map) {
-        for (int i = 0; i < firePower; i++) {
+        int determine = (dx == 1 && dy == 0) ? 1 : 0;
+        for (int i = 0; i < firePower + determine; i++) {
             curX += dx;
             curY += dy;
             BackGroundEntity current = map.getBackGround()[curY][curX];
@@ -52,6 +52,7 @@ public class Bomb extends AnimateEntity {
                 // tạo 1 grass mới và phá đi breakable wall này, phải cài đặt thêm item
                 Grass grass = new Grass(curX, curY);
                 grass.setList(current.getList());
+                grass.addFlame();
                 // add thêm item nếu có thể ?
                 // Item item = ((BreakableWall) current).getRandomItem();
                 // if(item != null) grass.getList().add(item);
@@ -63,10 +64,10 @@ public class Bomb extends AnimateEntity {
                 }
                 // hiệu ứng nổ dây chuyền của bomb
                 if(e instanceof Bomb) {
-                    ((Bomb) e).explode(map);
+                    if(!((Bomb) e).expired()) ((Bomb) e).explode(map);
                 }
             }
-            list.addLast(new Flame(curX, curY));
+            current.addFlame();
             if (current instanceof BreakableWall) {
                 break;
             }
@@ -78,12 +79,12 @@ public class Bomb extends AnimateEntity {
      * @param map map hiện tại của bomb
      */
     private void explode(GameMap map) {
-
         // Sound sd = new Sound();
         // sd.createSound(Sound.BOMB_EXPLOSION);
+        time = LIFE_TIME + 5; // huy bom hien tai nay
         int curX = (x + Sprite.ScaleSize / 2) / Sprite.ScaleSize;
         int curY = (y + Sprite.ScaleSize / 2) / Sprite.ScaleSize;
-        explodeDirect(curX, curY, 1, 0, map);
+        explodeDirect(curX -1, curY, 1, 0, map);
         explodeDirect(curX, curY, 0, 1, map);
         explodeDirect(curX, curY, -1, 0, map);
         explodeDirect(curX, curY, 0, -1, map);
@@ -116,7 +117,7 @@ public class Bomb extends AnimateEntity {
 
     @Override
     public void update(long now, GameMap map) {
-        if (time > LIFE_TIME - 1) {
+        if (time > LIFE_TIME-1) {
             explode(map);
         }
         time++;
