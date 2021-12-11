@@ -30,7 +30,7 @@ import java.util.ArrayList;
  * thuộc tính player và portal : player và portal của map
  */
 public class GameMap extends AnimationTimer implements EventHandler<KeyEvent> {
-    public static final int DISPLAY_BORDER = (int) (Sprite.ScaleSize * 3.5);
+    public static final int DISPLAY_BORDER = (int) (Sprite.ScaleSize * 1.5);
 
     public final double drawX, drawY;
     private final GraphicsContext mapGC;
@@ -223,9 +223,9 @@ public class GameMap extends AnimationTimer implements EventHandler<KeyEvent> {
             for (int j = 0; j < getWidth(); j++) {
                 Point p = new Point(j * Sprite.ScaleSize, i * Sprite.ScaleSize);
                 //System.out.println(p); // debug
-                //if (pointOfView.contains(p)) {
+                if (pointOfView.contains(p)) {
                     background[i][j].render(mapGC);
-                //}
+                }
                 background[i][j].update(now, this);
             }
         }
