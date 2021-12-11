@@ -3,7 +3,6 @@ package gameInterface;
 import entities.background.*;
 import entities.moveableEntities.*;
 import entities.*;
-import entities.Item.*;
 import graphics.Sprite;
 import graphics.SpriteSheet;
 import javafx.animation.AnimationTimer;
@@ -30,7 +29,7 @@ import java.util.ArrayList;
  * thuộc tính player và portal : player và portal của map
  */
 public class GameMap extends AnimationTimer implements EventHandler<KeyEvent> {
-    public static final int DISPLAY_BORDER = (int) (Sprite.ScaleSize * 1.5);
+    public int DISPLAY_BORDER = 32;
 
     public final double drawX, drawY;
     private final GraphicsContext mapGC;
@@ -57,7 +56,7 @@ public class GameMap extends AnimationTimer implements EventHandler<KeyEvent> {
         this.pointOfView = new Rectangle(0, 0, w * Sprite.ScaleSize, h * Sprite.ScaleSize);
         Sprite.ScaleSize = (int) (SpriteSheet.DEFAULT_SIZE * scale);
 
-        String mapPath = "data/level" + level + ".txt";
+        String mapPath = "data/map/level" + level + ".txt";
         int mapWidth, mapHeight = 0;
         ArrayList<String> files = new ArrayList<>();
         try {
@@ -91,11 +90,11 @@ public class GameMap extends AnimationTimer implements EventHandler<KeyEvent> {
                     }
                 }
             }
-            if (pointOfView.height > getHeight() * Sprite.ScaleSize) {
-                pointOfView.height = getHeight() * Sprite.ScaleSize;
+            if (pointOfView.height > mapGC.getCanvas().getHeight() - drawY) {
+                pointOfView.height = (int)(mapGC.getCanvas().getHeight() - drawY);
             }
-            if (pointOfView.width > getWidth() * Sprite.ScaleSize) {
-                pointOfView.width = getWidth() * Sprite.ScaleSize;
+            if (pointOfView.width > mapGC.getCanvas().getWidth() - drawX) {
+                pointOfView.width = (int) (mapGC.getCanvas().getWidth() - drawX);
             }
             setView();
         } catch (IOException e) {
@@ -117,8 +116,8 @@ public class GameMap extends AnimationTimer implements EventHandler<KeyEvent> {
      */
     public GameMap(GraphicsContext mapGC, int level, double drawX, double drawY) {
         this(mapGC, level, drawX, drawY, 0, 0);
-        pointOfView.width = (int) mapGC.getCanvas().getWidth();
-        pointOfView.height = (int) mapGC.getCanvas().getHeight();
+        pointOfView.width = (int) (mapGC.getCanvas().getWidth() - drawX);
+        pointOfView.height = (int) (mapGC.getCanvas().getHeight() - drawY);
         setView();
     }
 
@@ -199,7 +198,7 @@ public class GameMap extends AnimationTimer implements EventHandler<KeyEvent> {
 
     /**
      * hàm sẽ được gọi để cập nhật map trong mỗi frame (fps của map là 60 fps)
-     * @param now
+     * @param now thời gian hiện tại
      */
     @Override
     public void handle(long now) {
@@ -310,5 +309,9 @@ public class GameMap extends AnimationTimer implements EventHandler<KeyEvent> {
      */
     public Rectangle getPointOfView() {
         return (Rectangle) pointOfView.clone();
+    }
+
+    public void scaleBorder(double d) {
+        DISPLAY_BORDER = (int)(Sprite.ScaleSize * d);
     }
 }

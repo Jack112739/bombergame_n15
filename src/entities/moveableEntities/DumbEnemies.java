@@ -52,7 +52,7 @@ public class DumbEnemies extends MoveAbleEntity {
 
     @Override
     public boolean isDangerous() {
-        return true;
+        return dir != Direction.DEAD;
     }
 
     @Override

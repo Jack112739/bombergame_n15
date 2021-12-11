@@ -20,11 +20,11 @@ public class SpriteSheet {
      * các sprite mặc định được load sẵn trước khi khởi tạo game.
      */
     public static final int DEFAULT_SIZE = 32;
-    public static final SpriteSheet background = new SpriteSheet("data/background.png", DEFAULT_SIZE);
-    public static final SpriteSheet player = new SpriteSheet("data/player.png", DEFAULT_SIZE);
-    public static final SpriteSheet dumbEnemies = new SpriteSheet("data/dumbEnemies.png", DEFAULT_SIZE);
-    public static final SpriteSheet bomb = new SpriteSheet("data/bomb.png", DEFAULT_SIZE);
-    public static final SpriteSheet ItemSpeed = new SpriteSheet("data/powerup_speed.png", DEFAULT_SIZE);
+    public static final SpriteSheet background = new SpriteSheet("data/sprite/background.png", DEFAULT_SIZE);
+    public static final SpriteSheet player = new SpriteSheet("data/sprite/player.png", DEFAULT_SIZE);
+    public static final SpriteSheet dumbEnemies = new SpriteSheet("data/sprite/dumbEnemies.png", DEFAULT_SIZE);
+    public static final SpriteSheet bomb = new SpriteSheet("data/sprite/bomb.png", DEFAULT_SIZE);
+    public static final SpriteSheet ItemSpeed = new SpriteSheet("data/sprite/powerup_speed.png", DEFAULT_SIZE);
 
     public final int size;
     private final String path;

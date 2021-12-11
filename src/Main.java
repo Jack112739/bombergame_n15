@@ -1,4 +1,5 @@
 import gameInterface.GameMap;
+import graphics.Sprite;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -43,7 +44,7 @@ public class Main extends Application {
         Canvas canvas = new Canvas(WIDTH, HEIGHT);
         GraphicsContext gc = canvas.getGraphicsContext2D();
         gc.drawImage(
-            new Image("file:data/logScreen.png", WIDTH, HEIGHT, false, false),
+            new Image("file:data/sprite/logScreen.png", WIDTH, HEIGHT, false, false),
             0,
             0);
 
@@ -63,7 +64,8 @@ public class Main extends Application {
         Canvas canvas = new Canvas(WIDTH, HEIGHT);
         GraphicsContext gc = canvas.getGraphicsContext2D();
 
-        map = new GameMap(gc, 1, 0, 50, 1, 7, 7);
+        map = new GameMap(gc, 2,0,0,2,10000, 10000);
+        map.scaleBorder(1.5);
 
         Button button = new Button("return");
 
