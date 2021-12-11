@@ -44,7 +44,8 @@ public class MapDisplay extends AnimationTimer implements EventHandler<KeyEvent>
 
     @Override
     public void handle(long now) {
-        if(map.status() != GameMap.Status.GAME_ON) return;
+        if(map.status() == GameMap.Status.PLAYER_LOSE) displayLose();
+        if(map.status() == GameMap.Status.PLAYER_WIN) displayWin();
         map.handle(now);
         gc.setFill(Color.BLACK);
         gc.fillRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getWidth());

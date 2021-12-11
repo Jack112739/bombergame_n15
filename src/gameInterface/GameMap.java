@@ -300,7 +300,7 @@ public class GameMap extends AnimationTimer implements EventHandler<KeyEvent> {
      */
     public Status status() {
         if(player == null || player.expired()) return Status.PLAYER_LOSE;
-        else if(player.getX() + player.getY() > 1200) return Status.PLAYER_WIN; // để test thôi
+        else if(player.getX() + player.getY() > 400) return Status.PLAYER_WIN; // để test thôi
         else return Status.GAME_ON;
     }
 }
